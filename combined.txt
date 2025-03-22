@@ -1,0 +1,339 @@
+
+
+// --- File: /Users/roberthogan/Documents/github/games/sandbox-skill-based-rpg/client/index.html ---
+
+<!-- client/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Simple Chat with Socket.IO</title>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <h1>Chat App</h1>
+    <input id="messageInput" type="text" placeholder="Enter message" />
+    <button id="sendButton">Send</button>
+    <ul id="messages"></ul>
+    <script src="main.js"></script>
+  </body>
+</html>
+
+
+// --- File: /Users/roberthogan/Documents/github/games/sandbox-skill-based-rpg/client/main.js ---
+
+// Connect to the Socket.IO server
+const socket = io();
+
+// Emit a chat message when the button is clicked
+document.getElementById("sendButton").addEventListener("click", () => {
+  const message = document.getElementById("messageInput").value;
+  socket.emit("chat message", message);
+  document.getElementById("messageInput").value = "";
+});
+
+// Listen for chat messages from the server and display them
+socket.on("chat message", (msg) => {
+  const li = document.createElement("li");
+  li.textContent = msg;
+  document.getElementById("messages").appendChild(li);
+});
+
+
+// --- File: /Users/roberthogan/Documents/github/games/sandbox-skill-based-rpg/combine-files.js ---
+
+const fs = require("fs");
+const path = require("path");
+
+const OUTPUT_FILE = "combined.txt";
+const EXCLUDED_DIRS = ["node_modules", ".git", "dist", "build"];
+const INCLUDED_EXTENSIONS = [
+  ".js",
+  ".ts",
+  ".vue",
+  ".json",
+  ".txt",
+  ".html",
+  ".css",
+  ".scss",
+  ".md",
+];
+
+function isExcluded(dir) {
+  return EXCLUDED_DIRS.includes(path.basename(dir));
+}
+
+function isIncluded(file) {
+  return INCLUDED_EXTENSIONS.includes(path.extname(file));
+}
+
+function getAllFiles(dirPath, arrayOfFiles = []) {
+  const entries = fs.readdirSync(dirPath);
+
+  for (const entry of entries) {
+    const fullPath = path.join(dirPath, entry);
+    const stats = fs.statSync(fullPath);
+
+    if (stats.isDirectory() && !isExcluded(fullPath)) {
+      getAllFiles(fullPath, arrayOfFiles);
+    } else if (stats.isFile() && isIncluded(fullPath)) {
+      arrayOfFiles.push(fullPath);
+    }
+  }
+
+  return arrayOfFiles;
+}
+
+function combineFiles(outputPath = OUTPUT_FILE) {
+  const allFiles = getAllFiles(process.cwd());
+  let output = "";
+
+  for (const file of allFiles) {
+    const content = fs.readFileSync(file, "utf8");
+    output += `\n\n// --- File: ${file} ---\n\n${content}`;
+  }
+
+  fs.writeFileSync(outputPath, output, "utf8");
+  console.log(`✅ Combined ${allFiles.length} files into ${outputPath}`);
+}
+
+combineFiles();
+
+
+// --- File: /Users/roberthogan/Documents/github/games/sandbox-skill-based-rpg/combined.txt ---
+
+
+
+// --- File: /Users/roberthogan/Documents/github/games/sandbox-skill-based-rpg/client/index.html ---
+
+<!-- client/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Simple Chat with Socket.IO</title>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <h1>Chat App</h1>
+    <input id="messageInput" type="text" placeholder="Enter message" />
+    <button id="sendButton">Send</button>
+    <ul id="messages"></ul>
+    <script src="main.js"></script>
+  </body>
+</html>
+
+
+// --- File: /Users/roberthogan/Documents/github/games/sandbox-skill-based-rpg/client/main.js ---
+
+// Connect to the Socket.IO server
+const socket = io();
+
+// Emit a chat message when the button is clicked
+document.getElementById("sendButton").addEventListener("click", () => {
+  const message = document.getElementById("messageInput").value;
+  socket.emit("chat message", message);
+  document.getElementById("messageInput").value = "";
+});
+
+// Listen for chat messages from the server and display them
+socket.on("chat message", (msg) => {
+  const li = document.createElement("li");
+  li.textContent = msg;
+  document.getElementById("messages").appendChild(li);
+});
+
+
+// --- File: /Users/roberthogan/Documents/github/games/sandbox-skill-based-rpg/combine-files.js ---
+
+const fs = require("fs");
+const path = require("path");
+
+const OUTPUT_FILE = "combined.txt";
+const EXCLUDED_DIRS = ["node_modules", ".git", "dist", "build"];
+const INCLUDED_EXTENSIONS = [
+  ".js",
+  ".ts",
+  ".vue",
+  ".json",
+  ".txt",
+  ".html",
+  ".css",
+  ".scss",
+  ".md",
+];
+
+function isExcluded(dir) {
+  return EXCLUDED_DIRS.includes(path.basename(dir));
+}
+
+function isIncluded(file) {
+  return INCLUDED_EXTENSIONS.includes(path.extname(file));
+}
+
+function getAllFiles(dirPath, arrayOfFiles = []) {
+  const entries = fs.readdirSync(dirPath);
+
+  for (const entry of entries) {
+    const fullPath = path.join(dirPath, entry);
+    const stats = fs.statSync(fullPath);
+
+    if (stats.isDirectory() && !isExcluded(fullPath)) {
+      getAllFiles(fullPath, arrayOfFiles);
+    } else if (stats.isFile() && isIncluded(fullPath)) {
+      arrayOfFiles.push(fullPath);
+    }
+  }
+
+  return arrayOfFiles;
+}
+
+function combineFiles(outputPath = OUTPUT_FILE) {
+  const allFiles = getAllFiles(process.cwd());
+  let output = "";
+
+  for (const file of allFiles) {
+    const content = fs.readFileSync(file, "utf8");
+    output += `\n\n// --- File: ${file} ---\n\n${content}`;
+  }
+
+  fs.writeFileSync(outputPath, output, "utf8");
+  console.log(`✅ Combined ${allFiles.length} files into ${outputPath}`);
+}
+
+combineFiles();
+
+
+// --- File: /Users/roberthogan/Documents/github/games/sandbox-skill-based-rpg/package.json ---
+
+{
+  "name": "sandbox-skill-based-rpg",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
+
+
+// --- File: /Users/roberthogan/Documents/github/games/sandbox-skill-based-rpg/server/server.js ---
+
+/* server/server.js */
+// Load environment variables from .env only in development mode
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
+const express = require("express");
+const http = require("http");
+const socketIo = require("socket.io");
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+app.use(express.static("client"));
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/../client/index.html");
+});
+
+io.on("connection", (socket) => {
+  console.log("Client connected:", socket.id);
+
+  socket.on("chat message", (msg) => {
+    console.log(`Received message: ${msg}`);
+    io.emit("chat message", msg);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
+  });
+});
+
+server.listen(PORT, () => {
+  console.log(`Server with Socket.IO running on port ${PORT}`);
+});
+
+
+// --- File: /Users/roberthogan/Documents/github/games/sandbox-skill-based-rpg/package.json ---
+
+{
+  "name": "sandbox-skill-based-rpg",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "combine": "node combine-files.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
+
+
+// --- File: /Users/roberthogan/Documents/github/games/sandbox-skill-based-rpg/server/server.js ---
+
+/* server/server.js */
+// Load environment variables from .env only in development mode
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
+const express = require("express");
+const http = require("http");
+const socketIo = require("socket.io");
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+app.use(express.static("client"));
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/../client/index.html");
+});
+
+io.on("connection", (socket) => {
+  console.log("Client connected:", socket.id);
+
+  socket.on("chat message", (msg) => {
+    console.log(`Received message: ${msg}`);
+    io.emit("chat message", msg);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
+  });
+});
+
+server.listen(PORT, () => {
+  console.log(`Server with Socket.IO running on port ${PORT}`);
+});
